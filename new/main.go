@@ -1,48 +1,45 @@
+//#Pancake sorting golang version.
+//#Date : April 18, 2017
+//#Written by Lee Jae Kyung
+//#Golang 1.7.4
+
+
 package main
 
-import (
-	"fmt"
-	"github.com/jayleec/algorithm_training/algoutils"
-)
+import "fmt"
 
 func main(){
-	slice := algoutils.GenerateSlice(11)
-	fmt.Println("Unsorted : ", slice)
-	fmt.Println("Sorted : ", MergeSort(slice))
+	// sort from back ( unsorted part|sorted part  )
+	// 1) find the biggest number
+	// 2) put turner behind
+	//  (Max, unsorted part | sorted part)
+	// 3) put turner previous of sorted part
+	//  (unsorted part, Max | sorted part)
 
-}
-
-func MergeSort(slice []int) []int{
-	fmt.Println("\tmergeSort function")
-	if len(slice) < 2 {
-		return slice
+	S := []int{5,6,3,4,7,8,1}
+	max := 0
+	for i := len(S)-1; i > 0; i--{
+		max = findMax(S, i)
+		reverse(S, max)
+		reverse(S, i)
 	}
-	mid := len(slice) / 2
-	return Merge(MergeSort(slice[:mid]), MergeSort(slice[mid:]))
+	fmt.Println(S)
 }
 
-func Merge(left, right []int) []int {
-	fmt.Println("Test function")
-	size, i, j := len(left) + len(right), 0, 0
-	slice := make([]int, size)
-
-	for k := 0 ; k <size; k++{
-		if i > len(left) - 1 && j<= len(right) - 1{
-			slice[k] = right[j]
-			j = j + 1
-		}else if j > len(right) - 1 && i <= len(left) - 1{
-			slice[k] = left[i]
-			i = i + 1
-		}else if left[i] < right[j]{
-			slice[k] = left[i]
-			i = i + 1
-		}else{
-			slice[k] = right[j]
-			j = j + 1
+//return max number's index
+func findMax(A []int, high int) int{
+	max, index := A[0], 0
+	for i := 1; i<= high; i++{
+		if max < A[i]{
+			max = A[i]
+			index = i
 		}
 	}
-	return slice
+	return index
 }
 
-
-
+func reverse(A []int, turner int){
+	for i, j := 0, turner; i<turner+1/2; i,j = i+1, j-1{
+		A[i], A[j] = A[j], A[i]
+	}
+}
